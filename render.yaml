@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: oms-backend
+    env: docker
+    plan: free # Change to starter/standard if needed
+    dockerCommand: "" # Defined by Dockerfile ENTRYPOINT
+    envVars:
+      - key: DB_PASSWORD
+        sync: false # Requires manual entry in the Render dashboard
+      - key: MAILTRAP_USERNAME
+        sync: false
+      - key: MAILTRAP_PASSWORD
+        sync: false
