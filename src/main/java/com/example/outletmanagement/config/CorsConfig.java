@@ -16,7 +16,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:5174",
                         "http://localhost:3000",
                         "https://*.devtunnels.ms",
-                        "https://70rgsz56-8080.inc1.devtunnels.ms")
+                        "https://70rgsz56-8080.inc1.devtunnels.ms",
+                        "https://oms-frontend-taupe.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD")
                 .allowedHeaders("*")
                 .exposedHeaders("Authorization", "Content-Type")
