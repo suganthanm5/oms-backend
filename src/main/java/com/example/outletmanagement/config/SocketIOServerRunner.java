@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component
-public class SocketIOServerRunner implements CommandLineRunner {
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+@Component
+@ConditionalOnProperty(name = "socket-server.enabled", havingValue = "true", matchIfMissing = false)
+public class SocketIOServerRunner implements CommandLineRunner {
     private final SocketIOServer server;
 
     @Autowired
