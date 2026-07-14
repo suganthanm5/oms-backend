@@ -65,7 +65,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/webjars/**",
                                 "/swagger-ui.html",
-                                "/ws/**")
+                                "/ws/**",
+                                "/api/health")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -102,7 +103,7 @@ public class SecurityConfig {
             }
         }
         origins.addAll(Arrays.asList(
-            "https://*.vercel.app",
+            "https://oms-frontend-r2h5y7xy7-suganthanm2005-9022s-projects.vercel.app",
             "http://localhost:5173",
             "http://127.0.0.1:5173",
             "http://localhost:5174",
