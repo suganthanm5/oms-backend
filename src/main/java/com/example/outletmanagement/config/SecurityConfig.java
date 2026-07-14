@@ -94,7 +94,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         
-        java.util.List<String> origins = new java.util.ArrayList<>(Arrays.asList(allowedOrigins.split(",")));
+        java.util.List<String> origins = new java.util.ArrayList<>();
+        for (String origin : allowedOrigins.split(",")) {
+            String trimmed = origin.trim();
+            if (!trimmed.isEmpty()) {
+                origins.add(trimmed);
+            }
+        }
         origins.addAll(Arrays.asList(
             "https://*.vercel.app",
             "http://localhost:5173",

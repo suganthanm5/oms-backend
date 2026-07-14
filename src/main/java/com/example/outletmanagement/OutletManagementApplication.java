@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class OutletManagementApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("java.security.egd", "file:/dev/./urandom");
 		SpringApplication.run(OutletManagementApplication.class, args);
 		System.out.println("Application started successfully");
 	}
