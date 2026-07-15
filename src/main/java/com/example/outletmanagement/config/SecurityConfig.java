@@ -109,7 +109,7 @@ public class SecurityConfig {
             "http://localhost:5174",
             "http://localhost:3000",
             "https://*.devtunnels.ms",
-            "*"
+            "https://*.vercel.app"
         ));
         
         config.setAllowedOriginPatterns(origins);

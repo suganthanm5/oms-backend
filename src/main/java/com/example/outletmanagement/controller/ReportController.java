@@ -106,7 +106,7 @@ public class ReportController {
 
     private final com.example.outletmanagement.repository.StockTransactionRepository stockTransactionRepository;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER', 'USER')")
     @GetMapping("/transactions")
     public ResponseEntity<ApiResponse> getTransactions(
             @RequestParam(required = false) com.example.outletmanagement.entity.StockTransaction.TransactionType type,
@@ -114,10 +114,21 @@ public class ReportController {
             @RequestParam(required = false) Long outletId,
             org.springframework.data.domain.Pageable pageable) {
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        Long effectiveOutletId = outletId;
+        if (currentUser.getRole() == User.Role.OUTLET_MANAGER || currentUser.getRole() == User.Role.USER) {
+            effectiveOutletId = currentUser.getOutlet() != null ? currentUser.getOutlet().getId() : -1L;
+        } else if (currentUser.getRole() == User.Role.MANAGER && currentUser.getOutlet() != null) {
+            effectiveOutletId = currentUser.getOutlet().getId();
+        }
+
         return ResponseEntity.ok(ApiResponse.builder()
                 .httpStatus(HttpStatus.OK.value())
                 .message("Transactions fetched")
-                .data(stockTransactionRepository.findFilteredTransactions(outletId, productId, type, pageable))
+                .data(stockTransactionRepository.findFilteredTransactions(effectiveOutletId, productId, type, pageable))
                 .build());
     }
 }

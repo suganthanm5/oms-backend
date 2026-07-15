@@ -43,16 +43,19 @@ public class LocationController {
                 .build());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER', 'USER')")
     @GetMapping
     public ResponseEntity<ApiResponse> getAllLocations(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        String activeSearch = keyword != null ? keyword : search;
-        Page<LocationResponse> response = locationService.getAllLocations(activeSearch, PageRequest.of(page, size));
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,desc") String sort) {
+        
+        String finalSearch = (search != null && !search.trim().isEmpty()) ? search : keyword;
+        PageRequest pageRequest = com.example.outletmanagement.utils.PaginationUtils.createPageRequest(page, size, sort);
+        Page<LocationResponse> response = locationService.getAllLocations(finalSearch, pageRequest);
+        
         return ResponseEntity.ok(ApiResponse.builder()
                 .httpStatus(HttpStatus.OK.value())
                 .message("Locations fetched successfully")
@@ -60,7 +63,7 @@ public class LocationController {
                 .build());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OUTLET_MANAGER', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getLocationById(@PathVariable Long id) {
         LocationResponse response = locationService.getLocationById(id);

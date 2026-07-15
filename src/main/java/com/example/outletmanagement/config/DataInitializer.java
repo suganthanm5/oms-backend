@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +21,8 @@ public class DataInitializer implements CommandLineRunner {
         private final OutletRepository outletRepository;
         private final OutletDivisionProductRepository mappingRepository;
         private final JdbcTemplate jdbcTemplate;
+        private final UserRepository userRepository;
+        private final PasswordEncoder passwordEncoder;
 
         @Override
         public void run(String... args) throws Exception {
@@ -45,6 +49,11 @@ public class DataInitializer implements CommandLineRunner {
                                 log.info("Initializing outlets...");
                                 initializeOutlets();
                                 log.info("Outlets initialized successfully");
+                        }
+                        if (userRepository.count() == 0) {
+                                log.info("Initializing admin user...");
+                                initializeUsers();
+                                log.info("Admin user initialized successfully");
                         }
                 } catch (Exception e) {
                         log.error("Error initializing data: ", e);
@@ -251,5 +260,21 @@ public class DataInitializer implements CommandLineRunner {
                                 .division(division3)
                                 .product(product6)
                                 .build());
+        }
+
+        private void initializeUsers() {
+                if (userRepository.findByUsername("sugu").isEmpty()) {
+                        User admin = User.builder()
+                                        .username("sugu")
+                                        .name("Sugu Admin")
+                                        .email("sugu@example.com")
+                                        .password(passwordEncoder.encode("password123"))
+                                        .role(User.Role.ADMIN)
+                                        .isDeleted(false)
+                                        .createdAt(new Date())
+                                        .updatedAt(new Date())
+                                        .build();
+                        userRepository.save(admin);
+                }
         }
 }
