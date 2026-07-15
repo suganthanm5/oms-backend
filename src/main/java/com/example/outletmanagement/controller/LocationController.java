@@ -53,7 +53,12 @@ public class LocationController {
             @RequestParam(defaultValue = "id,desc") String sort) {
         
         String finalSearch = (search != null && !search.trim().isEmpty()) ? search : keyword;
-        PageRequest pageRequest = com.example.outletmanagement.utils.PaginationUtils.createPageRequest(page, size, sort);
+        String sortField = sort.split(",")[0];
+        String sortDir = sort.split(",").length > 1 ? sort.split(",")[1] : "asc";
+        org.springframework.data.domain.Sort sortObj = sortDir.equalsIgnoreCase("desc") 
+                ? org.springframework.data.domain.Sort.by(sortField).descending() 
+                : org.springframework.data.domain.Sort.by(sortField).ascending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortObj);
         Page<LocationResponse> response = locationService.getAllLocations(finalSearch, pageRequest);
         
         return ResponseEntity.ok(ApiResponse.builder()
